@@ -1,0 +1,10 @@
+---
+- name: Install Docker
+  hosts: ec2
+  become: yes
+  tasks:
+    - name: Update 
+      ansible.builtin.yub:
+        name: docker
+        update_cache: yes
+        state: present
