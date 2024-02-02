@@ -1,0 +1,46 @@
+---
+- name: Install Docker
+  hosts: ec2
+  become: yes
+  tasks:
+    - name: Update 
+      ansible.builtin.yum:
+        name: docker
+        update_cache: yes
+        state: present
+
+- name: Install docker-compose
+  hosts: ec2
+  become: yes
+  tasks:
+    - name: Install Ddocker-Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Linux-{{lookup('pipe', 'uname -m')}}
+        dest: /usr/local/bin/docker-compose
+        mode: +x
+
+- name: Start Docker
+  hosts: ec2
+  become: yes
+  tasks:
+    - name: Start docker deamon
+      systemd:
+        name: docker
+        state: started
+
+- name: Add ec2-user to docker
+  hosts: ec2
+  become: yes
+  tasks:
+    - name: Add ec2-user to docker
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+    - name: Reconnect to server session
+      meta: reset_connection
+
+
+
+
+    
